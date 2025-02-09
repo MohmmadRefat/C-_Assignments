@@ -1,7 +1,24 @@
-﻿namespace Assignments
+﻿using System.Collections;
+
+namespace Assignments
 {
     internal class Program
     {
+        class StringEqualityComparer : IEqualityComparer
+        {
+            public new bool Equals(object? x, object? y)
+            {
+                string? X = x as string;
+                string? Y = y as string;
+                return X?.ToLower().Equals(Y?.ToLower())??Y is null?true:false;
+            }
+
+            public int GetHashCode(object obj)
+            {
+                string? s = obj as string;
+                return s?.ToLower().GetHashCode() ?? 0;
+            }
+        }
         static void Main(string[] args)
         {
             #region LinkedList
@@ -63,8 +80,17 @@
             //Console.WriteLine("----------------"); 
             #endregion
 
-
-
+            #region HashTable
+            Hashtable Note = new Hashtable(new StringEqualityComparer());
+            Note.Add("Mohmmad", 123);
+            Note.Add("Refat", 456);
+            Note.Add("Salah", 789);
+            //Note.Add("salah", 456);// key is duplicated
+            Console.WriteLine(Note["Mohmmad"]);
+            Console.WriteLine(Note["Ahmed"] ?? "Not Found");
+            foreach (DictionaryEntry i in Note)
+                Console.WriteLine($"Key : {i.Key} , Value : {i.Value}");
+            #endregion
 
 
 
