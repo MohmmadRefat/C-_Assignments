@@ -1,9 +1,54 @@
 ﻿using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Assignments
 {
     internal class Program
     {
+        class MovieEqualityComparer : IEqualityComparer<Movie>
+        {
+            public bool Equals(Movie? x, Movie? y)
+            {
+                return x?.Price == y?.Price;
+            }
+
+            public int GetHashCode([DisallowNull] Movie obj)
+            {
+                return obj.Price.GetHashCode();
+            }
+        }
+        class Movie : IEquatable<Movie>
+        {
+            public int Id { get; set; }
+            public string Title { get; set; }
+            public decimal Price { get; set; }
+
+            public Movie(int Id,string Title,decimal Price)
+            {
+                this.Id = Id;
+                this.Title = Title;
+                this.Price = Price;
+            }
+            public override string ToString()
+            {
+                return $"Id : {Id} , Title : {Title} , Price : {Price} ";
+            }
+            //public override bool Equals(object? obj)
+            //{
+            //    Movie? other = obj as Movie;
+            //    return this.Id.Equals(other?.Id ?? 0) && this.Title.Equals(other?.Title ??"")&&this.Price.Equals(other?.Price??0);
+            //}
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(Id, Title, Price);
+            }
+
+            public bool Equals(Movie? other)
+            {
+                return this.Id.Equals(other?.Id ?? 0) && this.Title.Equals(other?.Title ?? "") && this.Price.Equals(other?.Price ?? 0); ;
+            }
+        }
+        
         class StringEqualityComparer : IEqualityComparer
         {
             public new bool Equals(object? x, object? y)
@@ -17,6 +62,19 @@ namespace Assignments
             {
                 string? s = obj as string;
                 return s?.ToLower().GetHashCode() ?? 0;
+            }
+        }
+        class GenericStringEqualityComparer : IEqualityComparer<string>
+        {
+           
+
+            public bool Equals(string? X, string? Y)
+            {
+                return X?.ToLower().Equals(Y?.ToLower()) ?? Y is null ? true : false;
+            }
+            public int GetHashCode([DisallowNull] string obj)
+            {
+                return obj?.ToLower().GetHashCode() ?? 0;
             }
         }
         static void Main(string[] args)
@@ -81,15 +139,93 @@ namespace Assignments
             #endregion
 
             #region HashTable
-            Hashtable Note = new Hashtable(new StringEqualityComparer());
-            Note.Add("Mohmmad", 123);
-            Note.Add("Refat", 456);
-            Note.Add("Salah", 789);
-            //Note.Add("salah", 456);// key is duplicated
-            Console.WriteLine(Note["Mohmmad"]);
-            Console.WriteLine(Note["Ahmed"] ?? "Not Found");
-            foreach (DictionaryEntry i in Note)
-                Console.WriteLine($"Key : {i.Key} , Value : {i.Value}");
+            //Hashtable Note = new Hashtable(new StringEqualityComparer());
+            //Note.Add("Mohmmad", 123);
+            //Note.Add("Refat", 456);
+            //Note.Add("Salah", 789);
+            ////Note.Add("salah", 456);// key is duplicated
+            //Console.WriteLine(Note["Mohmmad"]);
+            //Console.WriteLine(Note["Ahmed"] ?? "Not Found");
+
+            //foreach (DictionaryEntry i in Note)
+            //    Console.WriteLine($"Key : {i.Key} , Value : {i.Value}");
+            #endregion
+
+            #region Dictionary
+            ////Dictionary : Pairs of Keys & Values
+            ////KEys Must be unique
+            #region Example01
+            //Dictionary<string, int> Note = new Dictionary<string, int>()
+            //{
+            //    {"Mohmmad",123 },
+            //    {"Refat",456 },
+            //    {"Salah",789 }
+            //};
+
+            //Note.Add("Ahmed", 159);
+            ////Note.Add("Ahmed", 7530); // throw exception (dublicated keys)
+            //Note.TryAdd("Mohmmad", 10);
+            //if (!Note.ContainsKey("Mohmmad"))
+            //    Note.Add("Mohmmad", 110);
+            //else Console.WriteLine("this key is already existed");
+
+            //foreach (KeyValuePair<string, int> /* var */ item in Note)
+            //    Console.WriteLine($"item.Key : {item.Key} ,item.Value : {item.Value}");
+
+            ////foreach(var item in Note.Keys)
+            ////    Console.WriteLine(item);
+            ////Console.WriteLine("-----------------------------");
+            ////foreach (var item in Note.Values)
+            ////    Console.WriteLine(item);
+
+            //Console.WriteLine(Note["Mohmmad"]);
+            ////Console.WriteLine(Note["Omar"]);  //Not Found
+            //bool result = Note.TryGetValue("Omar", out int value);
+            //Console.WriteLine($"Try Result : {result} , Retrevied Value : {value}");
+
+            #endregion
+            #region Example02
+
+            //KeyValuePair<string, int>[] KeyValuePairs = new KeyValuePair<string, int>[]
+            //{
+            //    new KeyValuePair<string, int>("Mohmmad",123),
+            //     new KeyValuePair<string, int>("Refat",124),
+            //      new KeyValuePair<string, int>("Salah",125),
+            //       new KeyValuePair<string, int>("Ahmed",126),
+            //        new KeyValuePair<string, int>("ahmed",127)
+
+            //};
+            //Dictionary<string, int> Note = new Dictionary<string, int>(KeyValuePairs); // No throw Exception
+            //                                                                           //Dictionary<string, int> Note = new Dictionary<string, int>(KeyValuePairs,new GenericStringEqualityComparer()); // Throw Exception
+
+            //foreach (var item in Note)
+            //{
+            //    Console.WriteLine($"item.Key : {item.Key} , item.Value : {item.Value}");
+            //}
+            #endregion
+
+            #endregion
+
+            #region HashSet
+            //HashSet<int>numbers = new HashSet<int>();
+            //numbers.Add(1);
+            //numbers.Add(2);
+            //numbers.Add(3);
+            //numbers.Add(4);
+            //numbers.Add(4); // no throw exception
+
+            //foreach (var item in numbers)
+            //    Console.WriteLine(item);
+
+            HashSet<Movie> movies = new HashSet<Movie>(new MovieEqualityComparer())
+            {
+                new Movie(1,"Moviex",2520),
+                new Movie(2,"Moviey",220),
+                new Movie(3,"Moviez",220),
+            };
+            movies.Add(new Movie(3, "Moviez", 320));
+            foreach (var item in movies)
+                Console.WriteLine(item); 
             #endregion
 
 
