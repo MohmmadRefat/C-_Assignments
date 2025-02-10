@@ -206,27 +206,6 @@ namespace Assignments
 
             #endregion
 
-            #region HashSet
-            //HashSet<int>numbers = new HashSet<int>();
-            //numbers.Add(1);
-            //numbers.Add(2);
-            //numbers.Add(3);
-            //numbers.Add(4);
-            //numbers.Add(4); // no throw exception
-
-            //foreach (var item in numbers)
-            //    Console.WriteLine(item);
-
-            HashSet<Movie> movies = new HashSet<Movie>(new MovieEqualityComparer())
-            {
-                new Movie(1,"Moviex",2520),
-                new Movie(2,"Moviey",220),
-                new Movie(3,"Moviez",220),
-            };
-            movies.Add(new Movie(3, "Moviez", 320));
-            foreach (var item in movies)
-                Console.WriteLine(item); 
-            #endregion
 
 
 
