@@ -1,83 +1,281 @@
-﻿namespace Assignments
+﻿using System.Collections;
+
+namespace Assignments
 {
     internal class Program
     {
-        public static void Swap<T>(ref T X,ref T Y)
+   
+        public static void ReverseArrayList(ArrayList reversedArray)
         {
-            T temp;
-            temp = X;
-            X = Y;
-            Y = temp;
-        }
-        public static void BubbleSort<T>(T[] arr,Func<T,T,bool>Compare)
-        {
-            bool swapped = false;
-            for (int i = 0; i < arr.Length; i++)
+            for (int i = (reversedArray.Count - 1) / 2; i >= 0; i--)
             {
-                for(int j = 0; j < arr.Length - i - 1; j++)
-                {
-                    if (Compare(arr[j], arr[j+1]))
-                    {
-                        Swap<T>(ref arr[j], ref arr[j + 1]);
-                        swapped = true;
-                    }
-                }
-                if (!swapped)
-                {
-                    break;
-                }
+                var temp = reversedArray[reversedArray.Count - i - 1];
+                reversedArray[reversedArray.Count - i - 1] = reversedArray[i];
+                reversedArray[i] = temp;
             }
         }
 
-        class Range<T> where T : IComparable<T>
+        public static List<int> EvenNumbers(List<int> numbers)
         {
-            public T MaxValue { get; set; }
-            public T MinValue { get; set; }
+            List<int> result = new List<int>();
+            foreach (var number in numbers)
+            {
+                if (number % 2 == 0)
+                    result.Add(number);
+            }
+            return result;
+        }
 
-            public Range(T MinValue,T MaxValue)
+        class FixedSizeList<T>
+        {
+            public int Count { get; set; }
+            public int Capasity { get; set; }
+
+            private List<T> list;
+            public FixedSizeList(int capasity)
             {
-                this.MaxValue= MaxValue; this.MinValue = MinValue; 
+                Count = 0;
+                Capasity = capasity;
+                list = new List<T>(Capasity);
             }
 
-            public bool IsInRange(T Value) 
+            public void Add(T value)
             {
-                return (Value.CompareTo(MinValue)>=0 )&& (Value.CompareTo(MaxValue)<=0);
+                if (list.Count >= Capasity)
+                    throw new InvalidOperationException("The list is already full.");
+
+                list.Add(value);
+                Count++;
+
             }
 
-            public T Length() 
+            public T Get(int index)
             {
-                return (dynamic)MaxValue - (dynamic)MinValue;
+                if (index < 0 && index > list.Count)
+                    throw new InvalidOperationException("Out Of Bound.");
+                else
+                    return list[index];
+
+
             }
-            public override string ToString()
+
+
+        }
+
+        public static int UpperBound(List<int> list, int target)
+        {
+            int l = 0, r = list.Count, mid;
+            while (l < r)
             {
-                return $"MinVlaue : {MinValue} , MaxValue : {MaxValue}";
+                mid = l + (r - l) / 2;
+                if (target >= list[mid])
+                {
+                    l = mid + 1;
+                }
+                else
+                {
+                    r = mid;
+                }
             }
+
+            //if (l < list.Count && target < list[list.Count - 1])
+            //    l++;
+
+            return l;
+        }
+
+        public static bool IsPalindrome(List<int> list)
+        {
+            for (int i = 0; i < list.Count / 2; i++)
+            {
+                if (list[i] != list[list.Count - i - 1])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static int[] RemoveDupicatedElements(int[] arr)
+        {
+            List<int> result = new List<int>(arr.Length);
+            int j = 0;
+            foreach (int i in arr)
+            {
+                if (!result.Contains(i))
+                {
+                    result.Add(i);
+
+                }
+            }
+            return result.ToArray();
+        }
+
+        public static ArrayList RemoveOddNumbers(ArrayList numbers)
+        {
+            ArrayList result = new ArrayList();
+            foreach (int i in numbers)
+            {
+                if (i % 2 == 0)
+                {
+                    result.Add(i);
+                }
+            }
+            return result;
         }
         static void Main(string[] args)
         {
-            #region 1 -The Bubble Sort algorithm has a time complexity of O(n^2) in its worst and average cases, which makes it inefficient for large datasets. How we can optimize the Bubble Sort algorithm And implement the code of this optimized bubble sort algorithm
-
-            //we can decrease the time of the Bubble sort algorithm to O(N) By use Boolean Flag to detect if the swap operation is occured or not 
-            //if the swap operation occured that's means the Array/List is still not sorted , other wise means it is been sorted
-            // this optimazation in Best case only O(N)
-
-            //int[] numbers = { 10, 2, 3, 5, 6, 7, 1, 8, 9, 4 };
-            //BubbleSort<int>(numbers, delegate (int X, int Y) { return X > Y; });
-            //foreach (int x in numbers)
-            //    Console.WriteLine( x);
 
 
-            #endregion
+       
+        #region Example01
+        //ArrayList numbers = new ArrayList();
+        //Console.WriteLine($"Count: {numbers.Count}, Capacity: {numbers.Capacity}");
+        //numbers.Add(1);
+        //Console.WriteLine($"Count: {numbers.Count}, Capacity: {numbers.Capacity}");
+        //numbers[0] = 1;
+        //numbers.Add(2);
+        //numbers.Add(3);
+        //numbers.Add(4);
+        //numbers.Add(5);
+        //foreach (int i in numbers) Console.WriteLine(i);
+        //Console.WriteLine("--------After REverse---------");
+        //ReverseArrayList(numbers);
+        //foreach (int i in numbers) Console.WriteLine(i);
+        #endregion
 
-            #region create a generic Range<T> class that represents a range of values from a minimum value to a maximum value. 
-            Range<decimal> obj = new Range<decimal>(3.53M, 10.63M);
-            Console.WriteLine(obj);
-            if (obj.IsInRange(5))
+        #region Example02
+        //List<int> numbers = new List<int>(7);
+        ////Console.WriteLine($"Count: {numbers.Count}, Capasity: {numbers.Capacity}");
+        //numbers.Add(1);
+        //numbers.Add(2);
+        //numbers.Add(3);
+        //numbers.AddRange(new int[] { 4, 5, 6 });
+        //foreach (int i in numbers) Console.WriteLine(i);
+        //Console.WriteLine("--------------");
+
+        //List<int> evennumbers = EvenNumbers(numbers);
+        //foreach (int i in evennumbers) Console.WriteLine(i);
+        #endregion
+
+        #region Example03
+        //FixedSizeList<int> Numbers = new FixedSizeList<int>(5);
+        //Numbers.Add(1);
+        //Numbers.Add(2);
+        //Numbers.Add(3);
+        //Numbers.Add(4);
+        //Numbers.Add(5);
+        ////Numbers.Add(6);// Throw Exception
+        //for (int i = 0; i < Numbers.Count; i++)
+        //{
+        //    Console.WriteLine(Numbers.Get(i));
+        //}
+        ////Console.WriteLine(Numbers.Get(10));//Throw Exception
+        #endregion
+
+        #region Example04
+        //Dictionary<char, int> Freq = new Dictionary<char, int>();
+        //string Str = Console.ReadLine()!;
+        //foreach (char item in Str)
+        //{
+        //    if (!Freq.ContainsKey(item))
+        //        Freq.Add(item, 1);
+        //    else
+        //        Freq[item]++;
+        //}
+        //Console.WriteLine("UnRepeated characters");
+        //bool ok = false;
+        //foreach (var item in Freq)
+        //{
+        //    if (item.Value == 1)
+        //    {
+        //        ok = true;
+        //        Console.WriteLine(item.Key);
+        //    }
+        //    //Console.WriteLine($"Key : {item.Key} , Value : {item.Value}");
+
+        //}
+        //if (!ok)
+        //    Console.WriteLine(-1);
+        #endregion
+
+        #region Example05
+        //Console.WriteLine("Enter the Size and Number of Queries");
+        //int x = int.Parse(Console.ReadLine()!);
+        //int y = int.Parse(Console.ReadLine()!);
+        //int z;
+        //List<int> list = new List<int>(x);
+        //Console.WriteLine("Enter the List");
+        //for (int i = 0; i < x; i++)
+        //{
+        //    z = int.Parse(Console.ReadLine()!);
+        //    list.Add(z);
+        //}
+        //list.Sort();
+        //int ind = 0;
+        //Console.WriteLine("Enter the Queries");
+        //while (y-- > 0)
+        //{
+        //    z = int.Parse(Console.ReadLine()!);
+        //    ind = UpperBound(list, z);
+        //    Console.WriteLine($"this number is Less than : {list.Count - ind} number");
+        //} 
+        #endregion
+
+        #region Example06
+        //List<int> list = new List<int>();
+        //int size = int.Parse(Console.ReadLine()!);
+
+        //int x = 0;
+        //for (int i = 0; i < size; i++)
+        //{
+        //    x = int.Parse(Console.ReadLine()!);
+        //    list.Add(x);
+        //}
+        //if (IsPalindrome(list))
+        //{
+        //    Console.WriteLine("It is Palindrome");
+        //}
+        //else
+        //{
+        //    Console.WriteLine("Not Palindrome");
+        //}
+        #endregion
+
+        #region Example07
+        // Console.WriteLine("Enter the size of the array");
+        // int size = int.Parse(Console.ReadLine()!);
+        // Console.WriteLine("Enter the Elements of the Array");
+
+        // int[] numbers = new int[size];
+        // for (int i = 0; i < size; i++)
+        // {
+        //     numbers[i] = int.Parse(Console.ReadLine()!);// 1 1 1 2  3 3 4 
+
+        // }
+        //numbers= RemoveDupicatedElements(numbers);
+        // foreach(int i in numbers) Console.WriteLine(i);
+
+
+        #endregion
+
+        #region Exmple08
+        Console.WriteLine("Enter the size of the ArrayList");
+            int size = int.Parse(Console.ReadLine()!);
+        Console.WriteLine("Enter the Elements of the ArrayList");
+
+            ArrayList numbers = new ArrayList();
+
+            for (int i = 0; i<size; i++)
             {
-                Console.WriteLine("it is in Range");
+                numbers.Add(int.Parse(Console.ReadLine()!));
             }
-            Console.WriteLine($"The Length Of Ragne : { obj.Length()}");
+
+    numbers = RemoveOddNumbers(numbers);
+            foreach (int i in numbers)
+                Console.WriteLine(i); 
             #endregion
+
 
         }
     }
